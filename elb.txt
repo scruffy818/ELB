@@ -1,27 +1,27 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: OCI POC Test ELB
+Description: POC Test ELB
 Parameters:
   AppServer:
-    Description: use1locipocdb01
+    Description: men
     Type: String
-    Default: i-0b36f73b8a644ae3a
+    Default: i-xxxxxxxxxxxx
   VPCID:
     Description: Name of the VPC
     Type: 'AWS::EC2::VPC::Id'
-    Default: vpc-02d4767d8e7750b6f
+    Default: vpc-xxxxxxxxxxxxxx
     ConstraintDescription: Must be a valid VPC.
 #  KeyName:
 #    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
 #    Type: 'AWS::EC2::KeyPair::KeyName'
-#    Default: OIC-TEST
+#    Default: XXXX
   SubnetIdPublicEastC:
     Description: Private subnet for confidential apps in us-east-1c
     Type: 'AWS::EC2::Subnet::Id'
-    Default: subnet-0d1c1d6b7a28ded28
+    Default: subnet-xxxxxxxxxxxxxxxxx
   SubnetIdPublicEastD:
     Description: Private subnet for confidential apps in us-east-1d
     Type: 'AWS::EC2::Subnet::Id'
-    Default: subnet-03387ea2b2d01c7ff
+    Default: subnet-xxxxxxxxxxxxxxxxxxxxx
 #  SubnetAvailabilityZone:
 #    Description: Availability Zone for subnet
 #    Type: String
@@ -32,33 +32,33 @@ Parameters:
   PublicSubnets:
     Type: List<AWS::EC2::Subnet::Id>
     Description: 'Public subnet for the ELB in us-east-1c and us-east-1d'
-    Default: "subnet-0d1c1d6b7a28ded28,subnet-03387ea2b2d01c7ff"
+    Default: "subnet-xxxxxxxxxxxxx,subnet-xxxxxxxxxxxxxxxx"
   CertARN:
     Type: String
-    Default: arn:aws:acm:us-east-1:337034229727:certificate/aa67941c-533e-4307-9731-1b351bcfac6d
+    Default: arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 Resources:
   ElbSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: OCI-ELB-SG
+      GroupDescription: ELB-SG
       VpcId:
         Ref: VPCID
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '443'
           ToPort: '8034'
-          CidrIp: '10.99.96.230/32'
+          CidrIp: 'xxxxxxxxxxxxxxxx/32'
       Tags:
         - Key: Name
-          Value: OCI-ELB-SG
+          Value: ELB-SG
   ElasticLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
 #    DependsOn:
 #      - ec2instance01
     Properties:
-      LoadBalancerName: OCI-ELB
+      LoadBalancerName: ELB
       SecurityGroups:
         - Ref: ElbSG
       Subnets: !Ref PublicSubnets
@@ -68,7 +68,7 @@ Resources:
         - Ref: AppServer
       Listeners:
         - LoadBalancerPort: '443'
-          InstancePort: '8034'
+          InstancePort: '80'
           InstanceProtocol: HTTP
           Protocol: HTTPS
           SSLCertificateId: !Ref CertARN 
